@@ -1,0 +1,11 @@
+
+# User-specific files
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*bin/
+*obj/
+*.orig
+.vscode/
+.vs/
