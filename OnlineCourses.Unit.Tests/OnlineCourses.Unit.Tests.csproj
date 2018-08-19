@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <Folder Include="Domain.Layer\" />
+    <Folder Include="Infrastructure.Layer\AzureServiceBus\" />
   </ItemGroup>
 
   <ItemGroup>

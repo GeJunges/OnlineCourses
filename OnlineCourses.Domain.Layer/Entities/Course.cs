@@ -12,6 +12,12 @@ namespace OnlineCourses.Domain.Layer.Entities {
 
         [Required]
         public Teacher Teacher { get; set; }
+                
+        public virtual string TeacherName { get; }
+        public virtual int TotalSignatures { get; }
+        public virtual int MinimumAge { get; }
+        public virtual int MaximumAge { get; }
+        public virtual int AverageAge { get; }
 
         public List<Student> Students { get; set; }
 

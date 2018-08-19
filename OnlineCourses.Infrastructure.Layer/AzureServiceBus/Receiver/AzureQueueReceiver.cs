@@ -8,15 +8,17 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace OnlineCourses.Infrastructure.Layer.AzureServiceBus.Receiver {
-    public class AzureQueueReceiver {
+    public class AzureQueueReceiver : IAzureQueueReceiver {
 
         private readonly IConfiguration _configuration;
         private QueueClient _queueClient;
         private ILoggerWrapper _logger;
+        private IWriteRepository<Student> _writeRepository;
 
-        public AzureQueueReceiver(IConfiguration configuration, ILoggerWrapper logger) {
+        public AzureQueueReceiver(IConfiguration configuration, ILoggerWrapper logger, IWriteRepository<Student> writeRepository) {
             _configuration = configuration;
             _logger = logger;
+            _writeRepository = writeRepository;
             Initialize();
         }
 
@@ -53,7 +55,7 @@ namespace OnlineCourses.Infrastructure.Layer.AzureServiceBus.Receiver {
 
         private async Task ProcessMessage(Student student) {
 
-            //Inserir AQUI
+            await _writeRepository.SaveAsync(student);
             SendEmail(student);
         }
 
@@ -61,7 +63,12 @@ namespace OnlineCourses.Infrastructure.Layer.AzureServiceBus.Receiver {
             _logger.Info($"Mr/Ms {student.Name} Your Subscription was Successful!");
         }
 
+        private void InitializeRepository(IWriteRepository<Student> writeRepository) {
+            _writeRepository = writeRepository;
+        }
+
         private void Initialize() {
+
             var settings = new AzureSettings {
                 ConnectionString = _configuration["AzureServiceBus:ConnectionString"],
                 QueueName = _configuration["AzureServiceBus:QueueName"],

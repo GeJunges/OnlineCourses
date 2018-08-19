@@ -12,8 +12,9 @@ using OnlineCourses.Domain.Layer.Interfaces;
 using OnlineCourses.Infrastructure.Layer.Repositories;
 using OnlineCourses.Domain.Layer.Logger;
 using OnlineCourses.Infrastructure.Layer.Services;
-using OnlineCourses.Infrastructure.Layer.AzureServiceBus.Receiver;
 using OnlineCourses.Infrastructure.Layer.AzureServiceBus.Sender;
+using OnlineCourses.Infrastructure.Layer.AzureServiceBus;
+using OnlineCourses.Infrastructure.Layer.AzureServiceBus.Receiver;
 
 namespace OnlineCourses.API {
     public class Startup {
@@ -23,6 +24,7 @@ namespace OnlineCourses.API {
         }
         public IConfiguration Configuration { get; }
         private ILoggerWrapper _logger;
+        private IInitializeReceiver _initializeReceiver;
 
         public void ConfigureServices(IServiceCollection services) {
             services.AddAutoMapper();
@@ -34,8 +36,10 @@ namespace OnlineCourses.API {
             services.AddTransient(typeof(IReadRepository<>), typeof(ReadRepository<>));
             services.AddTransient(typeof(IQueueService<>), typeof(QueueService<>));
             services.AddTransient(typeof(IAzureQueueSender<>), typeof(AzureQueueSender<>));
+            services.AddTransient<IAzureQueueReceiver, AzureQueueReceiver>();
+            services.AddTransient<IInitializeReceiver, InitializeReceiver>();
             services.AddTransient<ILoggerWrapper, LoggerWrapper>();
-                        
+
             services.AddMvc(options => {
                 SetFilters(options);
             }).SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
@@ -44,10 +48,11 @@ namespace OnlineCourses.API {
             });
         }
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerWrapper logger) {
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerWrapper logger, IInitializeReceiver initializeReceiver) {
             _logger = logger;
+            _initializeReceiver = initializeReceiver;
 
-           // CallAzureQueueReceiver();
+            InitializeAzureQueueReceiver();
 
             if (env.IsDevelopment()) {
                 app.UseDeveloperExceptionPage();
@@ -56,9 +61,8 @@ namespace OnlineCourses.API {
             app.UseMvc();
         }
 
-        private void CallAzureQueueReceiver() {
-            var azureQueueReceiver = new AzureQueueReceiver(Configuration, _logger);
-            azureQueueReceiver.Receive();
+        private void InitializeAzureQueueReceiver() {
+            _initializeReceiver.Init();
         }
 
         private static void SetFilters(MvcOptions options) {

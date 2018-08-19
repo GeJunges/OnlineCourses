@@ -14,7 +14,8 @@ namespace OnlineCourses.API.AutoMapperConfiguration {
                 .ForMember(dest => dest.Course, memberOptions => memberOptions.MapFrom(source => source.CourseDto));
 
             CreateMap<Course, CourseDto>().ReverseMap();
-            CreateMap<IEnumerable<Course>, List<CourseDto>>().ReverseMap();
+            CreateMap<IEnumerable<Course>, List<CourseListDto>>().ReverseMap();
+            CreateMap<Course, CourseDetailDto>().ReverseMap();
             CreateMap<Teacher, Teacher>().ReverseMap();
         }
     }

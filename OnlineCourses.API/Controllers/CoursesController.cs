@@ -23,7 +23,7 @@ namespace OnlineCourses.API.Controllers {
         [HttpGet]
         public async Task<IActionResult> Get() {
             var entities = await _readRepository.FindAll("Students");
-            var dtos = _mapper.Map<List<CourseDto>>(entities);
+            var dtos = _mapper.Map<List<CourseListDto>>(entities);
 
             return new JsonResult(dtos);
         }
@@ -35,7 +35,7 @@ namespace OnlineCourses.API.Controllers {
                 return NotFound("Course not found");
             }
 
-            var dto = _mapper.Map<CourseDto>(entity);
+            var dto = _mapper.Map<CourseDetailDto>(entity);
 
             return new JsonResult(dto);
         }

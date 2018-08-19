@@ -2,7 +2,7 @@
 using OnlineCourses.Domain.Layer.Interfaces;
 
 namespace OnlineCourses.Infrastructure.Layer.AzureServiceBus {
-    public class InitializeReceiver {
+    public class InitializeReceiver : IInitializeReceiver {
 
         private readonly ILoggerWrapper _logger;
         private readonly IAzureQueueReceiver _queueReceiver;
@@ -13,6 +13,9 @@ namespace OnlineCourses.Infrastructure.Layer.AzureServiceBus {
             _queueReceiver = queueReceiver;
             _configuration = configuration;
         }
-         
+
+        public void Init() {
+            _queueReceiver.Receive();
+        }
     }
 }

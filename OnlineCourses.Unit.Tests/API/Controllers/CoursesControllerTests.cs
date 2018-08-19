@@ -10,7 +10,6 @@ using OnlineCourses.Domain.Layer.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace OnlineCourses.Unit.Tests.API.Controllers {
@@ -32,12 +31,12 @@ namespace OnlineCourses.Unit.Tests.API.Controllers {
 
         [Test]
         public async Task Get_ShouldReturnAllCourses() {
-            var expected = CrieExpected().ToList();
+            var expected = CrieCourseListDto().ToList();
             _readRepositoryMock.Setup(mock => mock.FindAll(It.IsAny<string>())).ReturnsAsync(_courses);
-            _mapperMock.Setup(mock => mock.Map<List<CourseDto>>(It.IsAny<List<Course>>())).Returns(expected);
+            _mapperMock.Setup(mock => mock.Map<List<CourseListDto>>(It.IsAny<List<Course>>())).Returns(expected);
 
             var result = await _controller.Get() as JsonResult;
-            var actual = (List<CourseDto>)result.Value;
+            var actual = (List<CourseListDto>)result.Value;
 
             CollectionAssert.AreEquivalent(expected, actual);
         }
@@ -45,26 +44,27 @@ namespace OnlineCourses.Unit.Tests.API.Controllers {
         [Test]
         public async Task Get_ShouldReturnEmptyListIfNoCourses() {
             _readRepositoryMock.Setup(mock => mock.FindAll(It.IsAny<string>())).ReturnsAsync(new List<Course>());
-            _mapperMock.Setup(mock => mock.Map<List<CourseDto>>(It.IsAny<List<Course>>())).Returns(new List<CourseDto>());
+            _mapperMock.Setup(mock => mock.Map<List<CourseListDto>>(It.IsAny<List<Course>>())).Returns(new List<CourseListDto>());
 
             var result = await _controller.Get() as JsonResult;
-            var actual = (List<CourseDto>)result.Value;
+            var actual = (List<CourseListDto>)result.Value;
 
             CollectionAssert.IsEmpty(actual);
         }
 
         [Test]
         public async Task Get_ShouldReturnCourseById() {
-            var expected = CrieExpected().First();
+            var expected = CrieCourseDetailDto().First();
 
             _readRepositoryMock.Setup(mock => mock.FindById(It.IsAny<Guid>(), It.IsAny<string>())).ReturnsAsync(_courses.First());
-            _mapperMock.Setup(mock => mock.Map<CourseDto>(It.IsAny<Course>())).Returns(expected);
+            _mapperMock.Setup(mock => mock.Map<CourseDetailDto>(It.IsAny<Course>())).Returns(expected);
 
             var result = await _controller.Get(It.IsAny<Guid>()) as JsonResult;
-            var actual = (CourseDto)result.Value;
+            var actual = (CourseDetailDto)result.Value;
 
             Assert.AreEqual(expected, actual);
         }
+
 
         [Test]
         public async Task Get_ShouldReturnNotFoundIfCouseNotFounded() {
@@ -76,11 +76,29 @@ namespace OnlineCourses.Unit.Tests.API.Controllers {
             Assert.AreEqual(expected, actual.StatusCode);
         }
 
-        private IEnumerable<CourseDto> CrieExpected() {
+        private IEnumerable<CourseDetailDto> CrieCourseDetailDto() {
             foreach (var course in _courses) {
-                yield return new CourseDto {
+                yield return new CourseDetailDto {
                     Name = course.Name,
-                    MaximumSignatures = course.MaximumSignatures
+                    MaximumSignatures = course.MaximumSignatures,
+                    TotalSignatures = course.TotalSignatures,
+                    MinimumAge = course.MinimumAge,
+                    MaximumAge = course.MaximumAge,
+                    AverageAge = course.AverageAge,
+                    TeacherName = course.Teacher.Name
+                };
+            }
+        }
+
+        private IEnumerable<CourseListDto> CrieCourseListDto() {
+            foreach (var course in _courses) {
+                yield return new CourseListDto {
+                    Name = course.Name,
+                    MaximumSignatures = course.MaximumSignatures,
+                    TotalSignatures = course.TotalSignatures,
+                    MinimumAge = course.MinimumAge,
+                    MaximumAge = course.MaximumAge,
+                    AverageAge = course.AverageAge
                 };
             }
         }
