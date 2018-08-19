@@ -1,27 +1,73 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using OnlineCourses.Domain.Layer.Entities;
+using OnlineCourses.Domain.Layer.Interfaces;
+using OnlineCourses.Domain.Layer.Model;
+using System.Threading.Tasks;
 
 namespace OnlineCourses.API.Controllers {
+
     [Route("api/subscriptions")]
     [ApiController]
     public class SubscriptionsController : ControllerBase {
-       
-        // POST api/values
+
+        private readonly IMapper _mapper;
+        private readonly IWriteRepository<Student> _writeRepository;
+        private readonly IReadRepository<Course> _readRepository;
+
+        public SubscriptionsController(IMapper mapper, IWriteRepository<Student> writeRepository, IReadRepository<Course> readRepository) {
+            _mapper = mapper;
+            _writeRepository = writeRepository;
+            _readRepository = readRepository;
+        }
+
         [HttpPost]
-        public void Post([FromBody] string student) {
+        public IActionResult Post([FromBody] StudentDto student) {
+
+            var entity = _mapper.Map<Student>(student);
+            var course = _readRepository.FindSingleBy(n => n.Name == student.CourseDto.Name, "Students");
+
+            if (course == null) {
+                return NotFound("Course Not Found");
+            }
+            entity.Course = course;
+
+            if (!entity.Course.HasVacancy) {
+                return new JsonResult(new { error = "The course has no more vacancies." }) {
+                    StatusCode = StatusCodes.Status406NotAcceptable
+                };
+            }
+
+            _writeRepository.Save(entity);
+
+            return new JsonResult(new { sucess = "Subscription was successful!" }) {
+                StatusCode = StatusCodes.Status200OK
+            };
         }
 
-        // PUT api/values/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value) {
-        }
+        [HttpPost]
+        public async Task<IActionResult> PostAsync([FromBody] StudentDto student) {
 
-        // DELETE api/values/5
-        [HttpDelete("{id}")]
-        public void Delete(int id) {
+            var entity = _mapper.Map<Student>(student);
+            var course = await _readRepository.FindSingleByAsync(n => n.Name == student.CourseDto.Name, "Students");
+
+            if (course == null) {
+                return NotFound("Course Not Found");
+            }
+            entity.Course = course;
+
+            if (!entity.Course.HasVacancy) {
+                return new JsonResult(new { error = "The course has no more vacancies." }) {
+                    StatusCode = StatusCodes.Status406NotAcceptable
+                };
+            }
+
+            _writeRepository.SaveAsync(entity);
+
+            return new JsonResult(new { notification = "Your signature is being processed. When completed, you'll receive an email notification." }) {
+                StatusCode = StatusCodes.Status200OK
+            };
         }
     }
 }
