@@ -1,11 +1,11 @@
-﻿using OnlineCourses.Domain.Layer.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using OnlineCourses.Domain.Layer.Entities;
 using OnlineCourses.Domain.Layer.Interfaces;
 using OnlineCourses.Infrastructure.Layer.ContextConfiguration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 
 namespace OnlineCourses.Infrastructure.Layer.Repositories {
@@ -17,12 +17,12 @@ namespace OnlineCourses.Infrastructure.Layer.Repositories {
             _context = context;
         }
 
-        public IEnumerable<T> FindAll() {
-            throw new NotImplementedException();
+        public async Task<IEnumerable<T>> FindAll(string include) {
+            return await _context.Set<T>().Include(include).ToListAsync();
         }
 
-        public T FindById(Guid id) {
-            throw new NotImplementedException();
+        public async Task<T> FindById(Guid id, string include) {
+            return await _context.Set<T>().Include(include).Where(i => i.Id == id).FirstOrDefaultAsync();
         }
 
         public T FindSingleBy(Expression<Func<T, bool>> predicate, string include) {

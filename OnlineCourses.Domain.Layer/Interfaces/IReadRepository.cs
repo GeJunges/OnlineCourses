@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 namespace OnlineCourses.Domain.Layer.Interfaces {
     public interface IReadRepository<T> where T : IEntity {
 
-        IEnumerable<T> FindAll();
-        T FindById(Guid id);
+        Task<IEnumerable<T>> FindAll(string include);
         T FindSingleBy(Expression<Func<T, bool>> predicate, string include);
-
+        Task<T> FindById(Guid id, string include);
         Task<T> FindSingleByAsync(Expression<Func<T, bool>> predicate, string include);
+
     }
 }

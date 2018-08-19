@@ -19,7 +19,7 @@ namespace OnlineCourses.Unit.Tests.API.Controllers {
 
         private SubscriptionsController _controller;
         private Mock<IMapper> _mapperMock;
-        private Mock<IWriteRepository<Student>> _writeRepositoryMock;
+        private Mock<IQueueService<Student>> _queueServiceMock;
         private Mock<IReadRepository<Course>> _readRepositoryMock;
         private Guid _id;
         private StudentDto _studentDto;
@@ -31,9 +31,9 @@ namespace OnlineCourses.Unit.Tests.API.Controllers {
             _course = CreateCourse();
             _studentDto = CreateStudentDto();
             _mapperMock = new Mock<IMapper>();
-            _writeRepositoryMock = new Mock<IWriteRepository<Student>>();
+            _queueServiceMock = new Mock<IQueueService<Student>>();
             _readRepositoryMock = new Mock<IReadRepository<Course>>();
-            _controller = new SubscriptionsController(_mapperMock.Object, _writeRepositoryMock.Object, _readRepositoryMock.Object);
+            _controller = new SubscriptionsController(_mapperMock.Object, _readRepositoryMock.Object, _queueServiceMock.Object);
 
             _readRepositoryMock.Setup(mock => mock.FindSingleBy(It.IsAny<Expression<Func<Course, bool>>>(), It.IsAny<string>())).Returns(_course);
             _readRepositoryMock.Setup(mock => mock.FindSingleByAsync(It.IsAny<Expression<Func<Course, bool>>>(), It.IsAny<string>())).ReturnsAsync(_course);
@@ -50,14 +50,14 @@ namespace OnlineCourses.Unit.Tests.API.Controllers {
         }
 
         [Test]
-        public void Post_ShouldCallWriteRepositoryOnce() {
+        public void Post_ShouldCallQueueServiceOnce() {
             var expected = MapDtoToEntity(_studentDto);
             _mapperMock.Setup(mock => mock.Map<Student>(It.IsAny<StudentDto>())).Returns(expected);
 
             var actual = (JsonResult)_controller.Post(_studentDto);
 
-            _writeRepositoryMock.Verify(mock => mock.Save(It.IsAny<Student>()), Times.Once());
-            _writeRepositoryMock.Verify(mock => mock.Save(expected));
+            _queueServiceMock.Verify(mock => mock.Save(It.IsAny<Student>()), Times.Once());
+            _queueServiceMock.Verify(mock => mock.Save(expected));
         }
 
         [Test]
@@ -100,14 +100,14 @@ namespace OnlineCourses.Unit.Tests.API.Controllers {
         }
 
         [Test]
-        public async Task PostAsync_ShouldCallWriteRepositoryOnce() {
+        public async Task PostAsync_ShouldCallQueueServiceOnce() {
             var expected = MapDtoToEntity(_studentDto);
             _mapperMock.Setup(mock => mock.Map<Student>(It.IsAny<StudentDto>())).Returns(expected);
 
             var actual = await _controller.PostAsync(_studentDto);
 
-            _writeRepositoryMock.Verify(mock => mock.SaveAsync(It.IsAny<Student>()), Times.Once());
-            _writeRepositoryMock.Verify(mock => mock.SaveAsync(expected));
+            _queueServiceMock.Verify(mock => mock.SaveAsync(It.IsAny<Student>()), Times.Once());
+            _queueServiceMock.Verify(mock => mock.SaveAsync(expected));
         }
 
         [Test]

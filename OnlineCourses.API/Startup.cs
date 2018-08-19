@@ -11,6 +11,9 @@ using OnlineCourses.Infrastructure.Layer.ContextConfiguration;
 using OnlineCourses.Domain.Layer.Interfaces;
 using OnlineCourses.Infrastructure.Layer.Repositories;
 using OnlineCourses.Domain.Layer.Logger;
+using OnlineCourses.Infrastructure.Layer.Services;
+using OnlineCourses.Infrastructure.Layer.AzureServiceBus.Receiver;
+using OnlineCourses.Infrastructure.Layer.AzureServiceBus.Sender;
 
 namespace OnlineCourses.API {
     public class Startup {
@@ -18,8 +21,8 @@ namespace OnlineCourses.API {
         public Startup(IConfiguration configuration) {
             Configuration = configuration;
         }
-
         public IConfiguration Configuration { get; }
+        private ILoggerWrapper _logger;
 
         public void ConfigureServices(IServiceCollection services) {
             services.AddAutoMapper();
@@ -29,8 +32,10 @@ namespace OnlineCourses.API {
 
             services.AddTransient(typeof(IWriteRepository<>), typeof(WriteRepository<>));
             services.AddTransient(typeof(IReadRepository<>), typeof(ReadRepository<>));
+            services.AddTransient(typeof(IQueueService<>), typeof(QueueService<>));
+            services.AddTransient(typeof(IAzureQueueSender<>), typeof(AzureQueueSender<>));
             services.AddTransient<ILoggerWrapper, LoggerWrapper>();
-
+                        
             services.AddMvc(options => {
                 SetFilters(options);
             }).SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
@@ -39,12 +44,21 @@ namespace OnlineCourses.API {
             });
         }
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env) {
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerWrapper logger) {
+            _logger = logger;
+
+           // CallAzureQueueReceiver();
+
             if (env.IsDevelopment()) {
                 app.UseDeveloperExceptionPage();
             }
 
             app.UseMvc();
+        }
+
+        private void CallAzureQueueReceiver() {
+            var azureQueueReceiver = new AzureQueueReceiver(Configuration, _logger);
+            azureQueueReceiver.Receive();
         }
 
         private static void SetFilters(MvcOptions options) {

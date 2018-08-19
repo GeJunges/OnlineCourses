@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Newtonsoft.Json;
 
 namespace OnlineCourses.Domain.Layer.Entities {
     public class Student : IEntity {
@@ -10,6 +11,7 @@ namespace OnlineCourses.Domain.Layer.Entities {
         public int Age { get; set; }
 
         [Required]
+        [JsonIgnore]
         public Course Course { get; set; }
     }
 }

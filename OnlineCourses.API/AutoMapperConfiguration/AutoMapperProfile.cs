@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using OnlineCourses.Domain.Layer.Entities;
 using OnlineCourses.Domain.Layer.Model;
+using System.Collections.Generic;
 
 namespace OnlineCourses.API.AutoMapperConfiguration {
     public class AutoMapperProfile : Profile {
@@ -13,6 +14,7 @@ namespace OnlineCourses.API.AutoMapperConfiguration {
                 .ForMember(dest => dest.Course, memberOptions => memberOptions.MapFrom(source => source.CourseDto));
 
             CreateMap<Course, CourseDto>().ReverseMap();
+            CreateMap<IEnumerable<Course>, List<CourseDto>>().ReverseMap();
             CreateMap<Teacher, Teacher>().ReverseMap();
         }
     }
