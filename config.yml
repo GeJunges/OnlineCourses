@@ -1,0 +1,20 @@
+version: 2
+jobs:
+  build:
+    working_directory: /src
+    docker:
+      - image: microsoft/dotnet:sdk
+    environment:
+      DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
+      DOTNET_CLI_TELEMETRY_OPTOUT: 1
+    steps:
+      - checkout
+      - run:
+          name: Restore solution
+          command: dotnet restore
+      - run:
+          name: Build solution
+          command: dotnet build
+      - run:
+          name: Run tests 
+          command: dotnet test /OnlineCourses/OnlineCourses.Unit.Tests/OnlineCourses.Unit.Tests.csproj
