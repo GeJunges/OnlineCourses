@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 
 namespace OnlineCourses.Domain.Layer.Entities {
     public class Course : IEntity {
@@ -16,16 +17,15 @@ namespace OnlineCourses.Domain.Layer.Entities {
         public Teacher Teacher { get; set; }
         [JsonIgnore]
         public List<Student> Students { get; set; }
+
         [JsonIgnore]
-        public virtual string TeacherName { get; }
+        public int TotalSignatures { get; set; }
         [JsonIgnore]
-        public virtual int TotalSignatures { get; }
+        public int MinimumAge { get; set; }
         [JsonIgnore]
-        public virtual int MinimumAge { get; }
+        public int MaximumAge { get; set; }
         [JsonIgnore]
-        public virtual int MaximumAge { get; }
-        [JsonIgnore]
-        public virtual int AverageAge { get; }
+        public double AverageAge { get; set; }
         [JsonIgnore]
         public virtual bool HasVacancy {
             get {
@@ -36,6 +36,13 @@ namespace OnlineCourses.Domain.Layer.Entities {
 
                 return true;
             }
+        }
+
+        public void CalculateData() {
+            TotalSignatures = Students.Count;
+            MinimumAge = Students.Min(s => s.Age);
+            MaximumAge = Students.Max(s => s.Age);
+            AverageAge = Students.Average(s => s.Age);
         }
     }
 }

@@ -13,13 +13,15 @@ namespace OnlineCourses.Unit.Tests.Infrastructure.Layer.AzureServiceBus {
         private Mock<ILoggerWrapper> _loggerMock;
         private Mock<IAzureQueueReceiver> _queueReceiverMock;
         private Mock<IPersistenceService<Student>> _serviceMock;
+        private Mock<IEmailService> _emailServiceMock;
 
         [SetUp]
         public void SetUp() {
             _loggerMock = new Mock<ILoggerWrapper>();
             _queueReceiverMock = new Mock<IAzureQueueReceiver>();
             _serviceMock = new Mock<IPersistenceService<Student>>();
-            _initializeReceiver = new InitializeReceiver(_loggerMock.Object, _queueReceiverMock.Object, _serviceMock.Object);
+            _emailServiceMock = new Mock<IEmailService>();
+            _initializeReceiver = new InitializeReceiver(_loggerMock.Object, _queueReceiverMock.Object, _serviceMock.Object, _emailServiceMock.Object);
         }
 
         [Test]

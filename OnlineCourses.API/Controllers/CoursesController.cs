@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using OnlineCourses.Domain.Layer.Constants;
 using OnlineCourses.Domain.Layer.Entities;
 using OnlineCourses.Domain.Layer.Interfaces;
 using OnlineCourses.Domain.Layer.Model;
@@ -21,7 +22,7 @@ namespace OnlineCourses.API.Controllers {
 
         [HttpGet]
         public async Task<IActionResult> Get() {
-            var entities = await _readRepository.FindAll("Students");
+            var entities = await _readRepository.FindAll(Includes.Students());
             var dtos = _mapper.Map<IEnumerable<Course>, List<CourseListDto>>(entities);
 
             return new JsonResult(dtos);
@@ -29,7 +30,7 @@ namespace OnlineCourses.API.Controllers {
 
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(Guid id) {
-            var entity = await _readRepository.FindById(id, new[] { "Students", "Teacher" });
+            var entity = await _readRepository.FindById(id, Includes.StudentsAndTeacher());
             if (entity == null) {
                 return NotFound("Course not found");
             }

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using OnlineCourses.Domain.Layer.Constants;
 using OnlineCourses.Domain.Layer.Entities;
 using OnlineCourses.Domain.Layer.Interfaces;
 using OnlineCourses.Domain.Layer.Model;
@@ -27,7 +28,7 @@ namespace OnlineCourses.API.Controllers {
         public IActionResult Post([FromBody] StudentDto student) {
 
             var entity = _mapper.Map<Student>(student);
-            var course = _readRepository.FindSingleBy(n => n.Name == student.CourseDto.Name, "Students");
+            var course = _readRepository.FindSingleBy(n => n.Name == student.CourseDto.Name, Includes.StudentsAndTeacher());
 
             if (course == null) {
                 return NotFound("Course Not Found");
@@ -41,6 +42,7 @@ namespace OnlineCourses.API.Controllers {
             }
 
             _queueService.Save(entity);
+            _queueService.UpdateCourseInformations(entity.Course);
 
             return new JsonResult(new { sucess = "Subscription was successful!" }) {
                 StatusCode = StatusCodes.Status200OK
@@ -52,8 +54,8 @@ namespace OnlineCourses.API.Controllers {
         public async Task<IActionResult> PostAsync([FromBody] StudentDto student) {
 
             var entity = _mapper.Map<Student>(student);
-            var course = await _readRepository.FindSingleByAsync(n => n.Name == student.CourseDto.Name, "Students");
-
+            var course = await _readRepository.FindSingleByAsync(n => n.Name == student.CourseDto.Name, Includes.StudentsAndTeacher());
+            
             if (course == null) {
                 return NotFound("Course Not Found");
             }

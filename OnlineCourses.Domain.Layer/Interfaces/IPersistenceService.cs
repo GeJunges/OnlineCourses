@@ -6,5 +6,6 @@ namespace OnlineCourses.Domain.Layer.Interfaces {
         void Save(T entity);
         Task SaveAsync(T entity);
         Task SendToQueueToSaveAsync(T entity);
+        void UpdateCourseInformations(Course course);
     }
 }

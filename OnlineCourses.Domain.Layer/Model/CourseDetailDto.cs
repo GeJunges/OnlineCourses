@@ -6,7 +6,7 @@
         public int TotalSignatures { get; set; }
         public int MinimumAge { get; set; }
         public int MaximumAge { get; set; }
-        public int AverageAge { get; set; }
+        public double AverageAge { get; set; }
         public TeacherDto TeacherDto { get; set; }
     }
 }

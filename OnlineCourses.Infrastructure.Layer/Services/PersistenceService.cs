@@ -13,6 +13,11 @@ namespace OnlineCourses.Infrastructure.Layer.Services {
             _azureQueueSender = azureQueueSender;
         }
 
+        public void UpdateCourseInformations(Course course) {
+            course.CalculateData();
+            _writeRepository.Update(course);
+        }
+
         public void Save(T entity) {
             _writeRepository.Save(entity);
         }

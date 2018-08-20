@@ -27,12 +27,14 @@ namespace OnlineCourses.Infrastructure.Layer.Repositories {
                            .FirstOrDefaultAsync();
         }
 
-        public T FindSingleBy(Expression<Func<T, bool>> predicate, string include) {
-            return _context.Set<T>().Include(include).Where(predicate).SingleOrDefault();
+        public T FindSingleBy(Expression<Func<T, bool>> predicate, string[] includes) {
+            return _context.Set<T>().Include(includes[0]).Include(includes[1])
+                       .Where(predicate).SingleOrDefault();
         }
 
-        public async Task<T> FindSingleByAsync(Expression<Func<T, bool>> predicate, string include) {
-            return await _context.Set<T>().Include(include).Where(predicate).SingleOrDefaultAsync();
+        public async Task<T> FindSingleByAsync(Expression<Func<T, bool>> predicate, string[] includes) {
+            return await _context.Set<T>().Include(includes[0]).Include(includes[1])
+                            .Where(predicate).SingleOrDefaultAsync();
         }
     }
 }

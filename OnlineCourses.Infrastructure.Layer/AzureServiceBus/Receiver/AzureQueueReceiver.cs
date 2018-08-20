@@ -49,8 +49,7 @@ namespace OnlineCourses.Infrastructure.Layer.AzureServiceBus.Receiver {
                             await _queueClient.AbandonAsync(message.SystemProperties.LockToken);
                         else if (result == MessageProcessResponse.Dead)
                             await _queueClient.DeadLetterAsync(message.SystemProperties.LockToken);
-
-
+                        
                         onWait();
                     } catch (Exception ex) {
                         _logger.Error($"Error: {ex.Message}");

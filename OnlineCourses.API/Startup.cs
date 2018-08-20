@@ -42,6 +42,7 @@ namespace OnlineCourses.API {
             services.AddTransient<ILoggerWrapper, LoggerWrapper>();
             services.AddTransient<IAzureQueueReceiver, AzureQueueReceiver>();
             services.AddTransient<IInitializeReceiver, InitializeReceiver>();
+            services.AddTransient<IEmailService, EmailService>();
 
             services.AddMvc(options => {
                 SetFilters(options);

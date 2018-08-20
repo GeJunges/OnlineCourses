@@ -10,8 +10,8 @@ using OnlineCourses.Infrastructure.Layer.ContextConfiguration;
 namespace OnlineCourses.Infrastructure.Layer.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20180818210956_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20180820164807_ComputedFields")]
+    partial class ComputedFields
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -26,12 +26,22 @@ namespace OnlineCourses.Infrastructure.Layer.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<double>("AverageAge");
+
+                    b.Property<int>("MaximumAge");
+
                     b.Property<int>("MaximumSignatures");
+
+                    b.Property<int>("MinimumAge");
 
                     b.Property<string>("Name")
                         .IsRequired();
 
                     b.Property<Guid>("TeacherId");
+
+                    b.Property<string>("TeacherName");
+
+                    b.Property<int>("TotalSignatures");
 
                     b.HasKey("Id");
 

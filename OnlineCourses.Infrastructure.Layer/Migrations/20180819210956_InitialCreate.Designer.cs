@@ -10,8 +10,8 @@ using OnlineCourses.Infrastructure.Layer.ContextConfiguration;
 namespace OnlineCourses.Infrastructure.Layer.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20180818214946_SeedInitialData")]
-    partial class SeedInitialData
+    [Migration("20180819210956_InitialCreate")]
+    partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

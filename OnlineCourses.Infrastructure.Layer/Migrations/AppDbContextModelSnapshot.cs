@@ -6,85 +6,85 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OnlineCourses.Infrastructure.Layer.ContextConfiguration;
 
-namespace OnlineCourses.Infrastructure.Layer.Migrations
-{
+namespace OnlineCourses.Infrastructure.Layer.Migrations {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
-    {
-        protected override void BuildModel(ModelBuilder modelBuilder)
-        {
+    partial class AppDbContextModelSnapshot : ModelSnapshot {
+        protected override void BuildModel(ModelBuilder modelBuilder) {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "2.1.1-rtm-30846")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("OnlineCourses.Domain.Layer.Entities.Course", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd();
+            modelBuilder.Entity("OnlineCourses.Domain.Layer.Entities.Course", b => {
+                b.Property<Guid>("Id")
+                    .ValueGeneratedOnAdd();
 
-                    b.Property<int>("MaximumSignatures");
+                b.Property<double>("AverageAge");
 
-                    b.Property<string>("Name")
-                        .IsRequired();
+                b.Property<int>("MaximumAge");
 
-                    b.Property<Guid>("TeacherId");
+                b.Property<int>("MaximumSignatures");
 
-                    b.HasKey("Id");
+                b.Property<int>("MinimumAge");
 
-                    b.HasIndex("TeacherId");
+                b.Property<string>("Name")
+                    .IsRequired();
 
-                    b.ToTable("Courses");
-                });
+                b.Property<Guid>("TeacherId");
 
-            modelBuilder.Entity("OnlineCourses.Domain.Layer.Entities.Student", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd();
+                b.Property<int>("TotalSignatures");
 
-                    b.Property<int>("Age");
+                b.HasKey("Id");
 
-                    b.Property<Guid>("CourseId");
+                b.HasIndex("TeacherId");
 
-                    b.Property<string>("Name")
-                        .IsRequired();
+                b.ToTable("Courses");
+            });
 
-                    b.HasKey("Id");
+            modelBuilder.Entity("OnlineCourses.Domain.Layer.Entities.Student", b => {
+                b.Property<Guid>("Id")
+                    .ValueGeneratedOnAdd();
 
-                    b.HasIndex("CourseId");
+                b.Property<int>("Age");
 
-                    b.ToTable("Students");
-                });
+                b.Property<Guid>("CourseId");
 
-            modelBuilder.Entity("OnlineCourses.Domain.Layer.Entities.Teacher", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd();
+                b.Property<string>("Name")
+                    .IsRequired();
 
-                    b.Property<string>("Name")
-                        .IsRequired();
+                b.HasKey("Id");
 
-                    b.HasKey("Id");
+                b.HasIndex("CourseId");
 
-                    b.ToTable("Teachers");
-                });
+                b.ToTable("Students");
+            });
 
-            modelBuilder.Entity("OnlineCourses.Domain.Layer.Entities.Course", b =>
-                {
-                    b.HasOne("OnlineCourses.Domain.Layer.Entities.Teacher", "Teacher")
-                        .WithMany()
-                        .HasForeignKey("TeacherId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
+            modelBuilder.Entity("OnlineCourses.Domain.Layer.Entities.Teacher", b => {
+                b.Property<Guid>("Id")
+                    .ValueGeneratedOnAdd();
 
-            modelBuilder.Entity("OnlineCourses.Domain.Layer.Entities.Student", b =>
-                {
-                    b.HasOne("OnlineCourses.Domain.Layer.Entities.Course", "Course")
-                        .WithMany("Students")
-                        .HasForeignKey("CourseId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
+                b.Property<string>("Name")
+                    .IsRequired();
+
+                b.HasKey("Id");
+
+                b.ToTable("Teachers");
+            });
+
+            modelBuilder.Entity("OnlineCourses.Domain.Layer.Entities.Course", b => {
+                b.HasOne("OnlineCourses.Domain.Layer.Entities.Teacher", "Teacher")
+                    .WithMany()
+                    .HasForeignKey("TeacherId")
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            modelBuilder.Entity("OnlineCourses.Domain.Layer.Entities.Student", b => {
+                b.HasOne("OnlineCourses.Domain.Layer.Entities.Course", "Course")
+                    .WithMany("Students")
+                    .HasForeignKey("CourseId")
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
 #pragma warning restore 612, 618
         }
     }
