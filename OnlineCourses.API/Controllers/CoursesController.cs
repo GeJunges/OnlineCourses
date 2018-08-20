@@ -22,7 +22,7 @@ namespace OnlineCourses.API.Controllers {
         [HttpGet]
         public async Task<IActionResult> Get() {
             var entities = await _readRepository.FindAll("Students");
-            var dtos = _mapper.Map<List<CourseListDto>>(entities);
+            var dtos = _mapper.Map<IEnumerable<Course>, List<CourseListDto>>(entities);
 
             return new JsonResult(dtos);
         }
