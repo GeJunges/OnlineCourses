@@ -29,7 +29,7 @@ namespace OnlineCourses.API.Controllers {
 
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(Guid id) {
-            var entity = await _readRepository.FindById(id, "Students");
+            var entity = await _readRepository.FindById(id, new[] { "Students", "Teacher" });
             if (entity == null) {
                 return NotFound("Course not found");
             }

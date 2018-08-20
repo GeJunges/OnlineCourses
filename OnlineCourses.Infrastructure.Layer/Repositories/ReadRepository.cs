@@ -18,11 +18,14 @@ namespace OnlineCourses.Infrastructure.Layer.Repositories {
         }
 
         public async Task<IEnumerable<T>> FindAll(string include) {
-            return await _context.Set<T>().FromSql(@"SELECT * FROM VW_COURSE_DETAILS").ToListAsync();
+            return await _context.Set<T>().Include(include).ToListAsync();
+
         }
 
-        public async Task<T> FindById(Guid id, string include) {
-            return await _context.Set<T>().FromSql($"SELECT * FROM VW_COURSE_DETAILS WHERE ID = {id}").FirstOrDefaultAsync();
+        public async Task<T> FindById(Guid id, string[] includes) {
+            return await _context.Set<T>().Include(includes[0]).Include(includes[1])
+                           .Where(course => course.Id == id)
+                           .FirstOrDefaultAsync();
         }
 
         public T FindSingleBy(Expression<Func<T, bool>> predicate, string include) {
