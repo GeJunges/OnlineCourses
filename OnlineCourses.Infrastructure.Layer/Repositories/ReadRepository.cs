@@ -19,7 +19,6 @@ namespace OnlineCourses.Infrastructure.Layer.Repositories {
 
         public async Task<IEnumerable<T>> FindAll(string include) {
             return await _context.Set<T>().Include(include).ToListAsync();
-
         }
 
         public async Task<T> FindById(Guid id, string[] includes) {

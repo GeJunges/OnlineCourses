@@ -33,7 +33,7 @@ namespace OnlineCourses.Unit.Tests.API.Controllers {
         public async Task Get_ShouldReturnAllCourses() {
             var expected = CrieCourseListDto().ToList();
             _readRepositoryMock.Setup(mock => mock.FindAll(It.IsAny<string>())).ReturnsAsync(_courses);
-            _mapperMock.Setup(mock => mock.Map<List<CourseListDto>>(It.IsAny<List<Course>>())).Returns(expected);
+            _mapperMock.Setup(mock => mock.Map<IEnumerable<Course>, List<CourseListDto>>(It.IsAny<List<Course>>())).Returns(expected);
 
             var result = await _controller.Get() as JsonResult;
             var actual = (List<CourseListDto>)result.Value;
@@ -44,7 +44,7 @@ namespace OnlineCourses.Unit.Tests.API.Controllers {
         [Test]
         public async Task Get_ShouldReturnEmptyListIfNoCourses() {
             _readRepositoryMock.Setup(mock => mock.FindAll(It.IsAny<string>())).ReturnsAsync(new List<Course>());
-            _mapperMock.Setup(mock => mock.Map<List<CourseListDto>>(It.IsAny<List<Course>>())).Returns(new List<CourseListDto>());
+            _mapperMock.Setup(mock => mock.Map<IEnumerable<Course>, List<CourseListDto>>(It.IsAny<List<Course>>())).Returns(new List<CourseListDto>());
 
             var result = await _controller.Get() as JsonResult;
             var actual = (List<CourseListDto>)result.Value;
