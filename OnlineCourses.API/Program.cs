@@ -11,7 +11,7 @@ namespace OnlineCourses.API {
         {
             XmlDocument log4netConfig = new XmlDocument();
             log4netConfig.Load(File.OpenRead("log4net.config"));
-            var file = log4net.LogManager.CreateRepository(Assembly.GetEntryAssembly(),
+            var repo = log4net.LogManager.CreateRepository(Assembly.GetEntryAssembly(),
                        typeof(log4net.Repository.Hierarchy.Hierarchy));
             log4net.Config.XmlConfigurator.Configure(repo, log4netConfig["log4net"]);
 

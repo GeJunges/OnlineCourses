@@ -9,14 +9,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OnlineCourses.API", "Online
 		{90B08D72-41AD-42D9-83AB-2469D1091738} = {90B08D72-41AD-42D9-83AB-2469D1091738}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnlineCourses.Infrastructure.Layer", "OnlineCourses.Infrastructure.Layer\OnlineCourses.Infrastructure.Layer.csproj", "{90B08D72-41AD-42D9-83AB-2469D1091738}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OnlineCourses.Infrastructure.Layer", "OnlineCourses.Infrastructure.Layer\OnlineCourses.Infrastructure.Layer.csproj", "{90B08D72-41AD-42D9-83AB-2469D1091738}"
 	ProjectSection(ProjectDependencies) = postProject
 		{17444249-D53F-4644-A382-D6452FB18360} = {17444249-D53F-4644-A382-D6452FB18360}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnlineCourses.Domain.Layer", "OnlineCourses.Domain.Layer\OnlineCourses.Domain.Layer.csproj", "{17444249-D53F-4644-A382-D6452FB18360}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OnlineCourses.Domain.Layer", "OnlineCourses.Domain.Layer\OnlineCourses.Domain.Layer.csproj", "{17444249-D53F-4644-A382-D6452FB18360}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnlineCourses.Unit.Tests", "OnlineCourses.Unit.Tests\OnlineCourses.Unit.Tests.csproj", "{58AD25CD-1700-49C2-AB59-ADAB77ED68D8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OnlineCourses.Unit.Tests", "OnlineCourses.Unit.Tests\OnlineCourses.Unit.Tests.csproj", "{58AD25CD-1700-49C2-AB59-ADAB77ED68D8}"
 	ProjectSection(ProjectDependencies) = postProject
 		{36E62C2A-18B7-4E42-835C-3CB20A8E39D6} = {36E62C2A-18B7-4E42-835C-3CB20A8E39D6}
 		{17444249-D53F-4644-A382-D6452FB18360} = {17444249-D53F-4644-A382-D6452FB18360}

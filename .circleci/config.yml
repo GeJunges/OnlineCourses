@@ -17,4 +17,4 @@ jobs:
           command: dotnet build
       - run:
           name: Run tests 
-          command: dotnet test /OnlineCourses/OnlineCourses.Unit.Tests/OnlineCourses.Unit.Tests.csproj
+          command: dotnet test /src/OnlineCourses.Unit.Tests/OnlineCourses.Unit.Tests.csproj
