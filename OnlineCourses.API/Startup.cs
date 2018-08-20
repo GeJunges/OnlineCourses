@@ -30,16 +30,19 @@ namespace OnlineCourses.API {
             services.AddAutoMapper();
 
             var connectionString = Configuration.GetConnectionString("Development");
-            services.AddDbContext<AppDbContext>(opt => opt.UseSqlServer(connectionString));
+            services.AddDbContext<AppDbContext>(option =>
+                        option.UseSqlServer(connectionString)
+                        , ServiceLifetime.Singleton, 
+                        ServiceLifetime.Singleton);
 
-            services.AddTransient<ILoggerWrapper, LoggerWrapper>();
-            services.AddTransient(typeof(IWriteRepository<>), typeof(WriteRepository<>));
+            services.AddSingleton(typeof(IWriteRepository<>), typeof(WriteRepository<>));
             services.AddTransient(typeof(IReadRepository<>), typeof(ReadRepository<>));
             services.AddTransient(typeof(IPersistenceService<>), typeof(PersistenceService<>));
             services.AddTransient(typeof(IAzureQueueSender<>), typeof(AzureQueueSender<>));
+            services.AddTransient<ILoggerWrapper, LoggerWrapper>();
             services.AddTransient<IAzureQueueReceiver, AzureQueueReceiver>();
             services.AddTransient<IInitializeReceiver, InitializeReceiver>();
-            
+
             services.AddMvc(options => {
                 SetFilters(options);
             }).SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
