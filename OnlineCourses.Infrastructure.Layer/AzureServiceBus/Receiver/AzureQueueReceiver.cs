@@ -1,6 +1,7 @@
 ﻿using Microsoft.Azure.ServiceBus;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
+using OnlineCourses.Domain.Layer.AzureHelpers;
 using OnlineCourses.Domain.Layer.Entities;
 using OnlineCourses.Domain.Layer.Interfaces;
 using System;
@@ -13,16 +14,16 @@ namespace OnlineCourses.Infrastructure.Layer.AzureServiceBus.Receiver {
         private readonly IConfiguration _configuration;
         private QueueClient _queueClient;
         private ILoggerWrapper _logger;
-        private IWriteRepository<Student> _writeRepository;
 
-        public AzureQueueReceiver(IConfiguration configuration, ILoggerWrapper logger, IWriteRepository<Student> writeRepository) {
+        public AzureQueueReceiver(IConfiguration configuration, ILoggerWrapper logger) {
             _configuration = configuration;
             _logger = logger;
-            _writeRepository = writeRepository;
             Initialize();
         }
 
-        public void Receive() {
+        public void Receive(Func<Student, MessageProcessResponse> onProcess,
+            Action<Exception> onError,
+            Action onWait) {
 
             var options = new MessageHandlerOptions(e => {
                 LogError(e.Exception);
@@ -32,39 +33,35 @@ namespace OnlineCourses.Infrastructure.Layer.AzureServiceBus.Receiver {
                 MaxAutoRenewDuration = TimeSpan.FromMinutes(1)
             };
 
-            _queueClient.RegisterMessageHandler(async (message, token) => {
-                try {
-                    var data = Encoding.UTF8.GetString(message.Body);
-                    var student = JsonConvert.DeserializeObject<Student>(data);
+            _queueClient.RegisterMessageHandler(
+                async (message, token) => {
+                    try {
+                        var data = Encoding.UTF8.GetString(message.Body);
 
-                    _logger.Info($"Received message: SequenceNumber:{message.SystemProperties.SequenceNumber} Body:{data}");
+                        Console.WriteLine($"Received message: SequenceNumber:{message.SystemProperties.SequenceNumber} Body:{data}");
+                        var student = JsonConvert.DeserializeObject<Student>(data);
 
-                    await ProcessMessage(student);
-                    await _queueClient.CompleteAsync(message.SystemProperties.LockToken);
-                    _logger.Info("Process Completed");
-                } catch (Exception ex) {
-                    await _queueClient.DeadLetterAsync(message.SystemProperties.LockToken);
-                    LogError(ex);
-                }
-            }, options);
+                        var result = onProcess(student);
+
+                        if (result == MessageProcessResponse.Complete)
+                            await _queueClient.CompleteAsync(message.SystemProperties.LockToken);
+                        else if (result == MessageProcessResponse.Abandon)
+                            await _queueClient.AbandonAsync(message.SystemProperties.LockToken);
+                        else if (result == MessageProcessResponse.Dead)
+                            await _queueClient.DeadLetterAsync(message.SystemProperties.LockToken);
+
+
+                        onWait();
+                    } catch (Exception ex) {
+                        _logger.Error($"Error: {ex.Message}");
+                        await _queueClient.DeadLetterAsync(message.SystemProperties.LockToken);
+                        onError(ex);
+                    }
+                }, options);
         }
 
         private void LogError(Exception exception) {
             _logger.Error(exception.Message);
-        }
-
-        private async Task ProcessMessage(Student student) {
-
-            await _writeRepository.SaveAsync(student);
-            SendEmail(student);
-        }
-
-        private void SendEmail(Student student) {
-            _logger.Info($"Mr/Ms {student.Name} Your Subscription was Successful!");
-        }
-
-        private void InitializeRepository(IWriteRepository<Student> writeRepository) {
-            _writeRepository = writeRepository;
         }
 
         private void Initialize() {
@@ -73,6 +70,7 @@ namespace OnlineCourses.Infrastructure.Layer.AzureServiceBus.Receiver {
                 ConnectionString = _configuration["AzureServiceBus:ConnectionString"],
                 QueueName = _configuration["AzureServiceBus:QueueName"],
             };
+
             _queueClient = new QueueClient(settings.ConnectionString, settings.QueueName);
         }
     }

@@ -11,7 +11,6 @@ namespace OnlineCourses.Domain.Layer.Entities {
         public int Age { get; set; }
 
         [Required]
-        //[JsonIgnore]
         public Course Course { get; set; }
     }
 }

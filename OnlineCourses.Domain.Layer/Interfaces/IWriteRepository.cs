@@ -5,7 +5,6 @@ namespace OnlineCourses.Domain.Layer.Interfaces {
     public interface IWriteRepository<T> where T : IEntity {
 
         void Save(T entity);
-
         Task SaveAsync(T entity);
     }
 }

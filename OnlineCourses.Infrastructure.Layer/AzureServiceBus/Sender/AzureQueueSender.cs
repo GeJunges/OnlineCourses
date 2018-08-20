@@ -6,7 +6,6 @@ using OnlineCourses.Domain.Layer.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace OnlineCourses.Infrastructure.Layer.AzureServiceBus.Sender {
@@ -23,14 +22,15 @@ namespace OnlineCourses.Infrastructure.Layer.AzureServiceBus.Sender {
         }
 
         public async Task SendAsync(T item) {
-            _logger.Info("Initializing Queue");
+            _logger.Info("Initializing Sending to Queue");
             await SendAsync(item, null);
         }
 
         public async Task SendAsync(T item, Dictionary<string, object> properties) {
             var json = JsonConvert.SerializeObject(item);
+            Console.WriteLine($"Serialized object: {json}");
             var message = new Message(Encoding.UTF8.GetBytes(json));
-            
+
             if (properties != null) {
                 foreach (var prop in properties) {
                     message.UserProperties.Add(prop.Key, prop.Value);

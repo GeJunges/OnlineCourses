@@ -18,8 +18,8 @@ namespace OnlineCourses.Infrastructure.Layer.Repositories {
         }
 
         public async Task SaveAsync(T entity) {
-            _context.AddAsync<T>(entity);
-            _context.SaveChangesAsync();
+            await _context.AddAsync<T>(entity);
+            await _context.SaveChangesAsync();
         }
     }
 }

@@ -14,9 +14,9 @@ namespace OnlineCourses.API.Controllers {
 
         private readonly IMapper _mapper;
         private readonly IReadRepository<Course> _readRepository;
-        private readonly IQueueService<Student> _queueService;
+        private readonly IPersistenceService<Student> _queueService;
 
-        public SubscriptionsController(IMapper mapper, IReadRepository<Course> readRepository, IQueueService<Student> queueService) {
+        public SubscriptionsController(IMapper mapper, IReadRepository<Course> readRepository, IPersistenceService<Student> queueService) {
             _mapper = mapper;
             _readRepository = readRepository;
             _queueService = queueService;
@@ -64,8 +64,7 @@ namespace OnlineCourses.API.Controllers {
                     StatusCode = StatusCodes.Status406NotAcceptable
                 };
             }
-
-            _queueService.SaveAsync(entity);
+            _queueService.SendToQueueToSaveAsync(entity);
 
             return new JsonResult(new { notification = "Your signature is being processed. When completed, you'll receive an email notification." }) {
                 StatusCode = StatusCodes.Status200OK

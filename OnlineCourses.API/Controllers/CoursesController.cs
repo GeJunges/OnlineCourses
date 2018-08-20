@@ -5,7 +5,6 @@ using OnlineCourses.Domain.Layer.Interfaces;
 using OnlineCourses.Domain.Layer.Model;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace OnlineCourses.API.Controllers {

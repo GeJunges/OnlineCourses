@@ -19,7 +19,7 @@ namespace OnlineCourses.Unit.Tests.API.Controllers {
 
         private SubscriptionsController _controller;
         private Mock<IMapper> _mapperMock;
-        private Mock<IQueueService<Student>> _queueServiceMock;
+        private Mock<IPersistenceService<Student>> _queueServiceMock;
         private Mock<IReadRepository<Course>> _readRepositoryMock;
         private Guid _id;
         private StudentDto _studentDto;
@@ -31,7 +31,7 @@ namespace OnlineCourses.Unit.Tests.API.Controllers {
             _course = CreateCourse();
             _studentDto = CreateStudentDto();
             _mapperMock = new Mock<IMapper>();
-            _queueServiceMock = new Mock<IQueueService<Student>>();
+            _queueServiceMock = new Mock<IPersistenceService<Student>>();
             _readRepositoryMock = new Mock<IReadRepository<Course>>();
             _controller = new SubscriptionsController(_mapperMock.Object, _readRepositoryMock.Object, _queueServiceMock.Object);
 
@@ -106,8 +106,8 @@ namespace OnlineCourses.Unit.Tests.API.Controllers {
 
             var actual = await _controller.PostAsync(_studentDto);
 
-            _queueServiceMock.Verify(mock => mock.SaveAsync(It.IsAny<Student>()), Times.Once());
-            _queueServiceMock.Verify(mock => mock.SaveAsync(expected));
+            _queueServiceMock.Verify(mock => mock.SendToQueueToSaveAsync(It.IsAny<Student>()), Times.Once());
+            _queueServiceMock.Verify(mock => mock.SendToQueueToSaveAsync(expected));
         }
 
         [Test]
