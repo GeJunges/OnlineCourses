@@ -56,7 +56,7 @@ namespace OnlineCourses.Unit.Tests.API.Controllers {
         public async Task Get_ShouldReturnCourseById() {
             var expected = CrieCourseDetailDto().First();
 
-            _readRepositoryMock.Setup(mock => mock.FindById(It.IsAny<Guid>(), It.IsAny<string>())).ReturnsAsync(_courses.First());
+            _readRepositoryMock.Setup(mock => mock.FindById(It.IsAny<Guid>(), It.IsAny<string[]>())).ReturnsAsync(_courses.First());
             _mapperMock.Setup(mock => mock.Map<CourseDetailDto>(It.IsAny<Course>())).Returns(expected);
 
             var result = await _controller.Get(It.IsAny<Guid>()) as JsonResult;
@@ -69,7 +69,7 @@ namespace OnlineCourses.Unit.Tests.API.Controllers {
         [Test]
         public async Task Get_ShouldReturnNotFoundIfCouseNotFounded() {
             var expected = StatusCodes.Status404NotFound;
-            _readRepositoryMock.Setup(mock => mock.FindById(It.IsAny<Guid>(), It.IsAny<string>())).ReturnsAsync(default(Course));
+            _readRepositoryMock.Setup(mock => mock.FindById(It.IsAny<Guid>(), It.IsAny<string[]>())).ReturnsAsync(default(Course));
 
             var actual = await _controller.Get(It.IsAny<Guid>()) as ObjectResult;
 
@@ -85,7 +85,7 @@ namespace OnlineCourses.Unit.Tests.API.Controllers {
                     MinimumAge = course.MinimumAge,
                     MaximumAge = course.MaximumAge,
                     AverageAge = course.AverageAge,
-                    TeacherName = course.Teacher.Name
+                    TeacherDto =new TeacherDto { Name = course.Teacher.Name }
                 };
             }
         }
